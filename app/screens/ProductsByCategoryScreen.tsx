@@ -1,12 +1,17 @@
-import {FlatList, ScrollView, Text, TouchableOpacity, View} from "react-native";
-import React, {useEffect, useState} from "react";
-import {ArrowLeft2, DirectNotification, MessageNotif, Notepad2} from "iconsax-react-native";
+import {ScrollView, Text, TouchableOpacity, View} from "react-native";
+import React, {useCallback, useEffect, useState} from "react";
+import {ArrowLeft2, Notepad2} from "iconsax-react-native";
 import ProductItem from "@components/product-item/ProductItem";
+import * as SplashScreen from 'expo-splash-screen';
+import {useAppSelector} from "@utils/store";
+import {Colors} from "../constants";
 
 
 interface IResponse {
     response: any[]
 }
+
+const ignore = SplashScreen.preventAutoHideAsync();
 
 const ProductsByCategoryScreen = (props: any) => {
     const URL = `https://joinposter.com/api/menu.getProducts?token=569986:0996291ac9481581c876036c856da3dd&category_id=${props.route.params.category_id}&type=batchtickets`;
@@ -14,14 +19,11 @@ const ProductsByCategoryScreen = (props: any) => {
     const [data, setData] = useState<IResponse>();
 
     useEffect(() => {
-        console.log(props.route.params)
-
         async function getProducts() {
             await fetch(URL)
                 .then(response => response.json())
                 .then(data => {
                     setData(data);
-                    console.log(data)
                 })
                 .finally(() => setLoading(false))
         }
@@ -29,19 +31,32 @@ const ProductsByCategoryScreen = (props: any) => {
         const ignore = getProducts();
     }, []);
 
+    const onLayoutRootView = useCallback(async () => {
+        if (!loading) {
+            await SplashScreen.hideAsync();
+        }
+    }, [loading]);
+
     if (loading) {
-        return <View>
-            <Text>Loading...</Text>
-        </View>
+        return null;
     }
 
+    // if (loading) {
+    //     return <View>
+    //         <Text>Loading...</Text>
+    //     </View>
+    // }
+
     return (
-        <View style={{
-            flex: 1,
-            backgroundColor: '#fff',
-            paddingHorizontal: 24,
-            paddingBottom: 16
-        }}>
+        <View
+            onLayout={onLayoutRootView}
+            style={{
+                flex: 1,
+                backgroundColor: '#fff',
+                paddingHorizontal: 24,
+                // paddingBottom: 16
+                paddingBottom: 110
+            }}>
             <TouchableOpacity onPress={() => props.navigation.goBack()}>
                 <View style={{
                     width: 40,
@@ -67,7 +82,7 @@ const ProductsByCategoryScreen = (props: any) => {
                 }}>
                     <Notepad2
                         size="128"
-                        color="#fc8080"
+                        color={Colors.primary}
                         variant="Bulk"
                     />
                     <Text style={{
@@ -78,9 +93,9 @@ const ProductsByCategoryScreen = (props: any) => {
                     <TouchableOpacity style={{
                         paddingHorizontal: 24,
                         paddingVertical: 16,
-                        backgroundColor: '#fc8080',
+                        backgroundColor: Colors.primary,
                         borderRadius: 100,
-                    }} onPress={() => props.navigation.goBack()}>
+                    }} onPress={() => props.navigation.replace('Home')}>
                         <Text style={{
                             color: 'white',
                             fontSize: 16,
@@ -104,17 +119,12 @@ const ProductsByCategoryScreen = (props: any) => {
                             width: '100%',
                             gap: 20
                         }}>
-                        {data?.response.map((product: any, index) => (
+                        {data?.response.map((product: any) => (
                             <>
                                 <ProductItem
-                                    width={'47%'}
-                                    contentImage={{uri: `https://webwhymsa.joinposter.com/${product.photo}`}}
-                                    title={product.product_name} price={product.price["1"]}/>
-                                <ProductItem
-                                    width={'47%'}
-                                    contentImage={{uri: `https://webwhymsa.joinposter.com/${product.photo}`}}
-                                    title={product.product_name} price={product.price["1"]}/>
-                                <ProductItem
+                                    isFavourites={!!product.favourite}
+                                    product_object={product}
+                                    navigation={props.navigation}
                                     width={'47%'}
                                     contentImage={{uri: `https://webwhymsa.joinposter.com/${product.photo}`}}
                                     title={product.product_name} price={product.price["1"]}/>

@@ -6,7 +6,7 @@ const CategoryItem = ({categoryName, imageURL}: ICategoryItemProps) => {
     return (
             <View style={[styles.categoryContainer]}>
                 <View style={[styles.categoryContent]}>
-                    <Image source={{uri: imageURL}} style={{flex: 1, resizeMode: 'contain'}}/>
+                    <Image contentFit="contain" source={{uri: imageURL}} style={{flex: 1}}/>
                 </View>
                 <Text style={{
                     fontFamily: 'Montserrat-Regular'

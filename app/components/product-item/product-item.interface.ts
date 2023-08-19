@@ -5,5 +5,7 @@ export interface IPopularItemProps {
     title: string,
     price: number,
     isFavourites?: boolean,
-    width: DimensionValue;
+    width: DimensionValue,
+    navigation: any,
+    product_object: any,
 }

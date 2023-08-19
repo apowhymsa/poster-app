@@ -1,13 +1,12 @@
-import {StatusBar} from 'expo-status-bar';
-import {StyleSheet, Text, View} from 'react-native';
+
 import {SafeAreaView} from "react-native-safe-area-context";
 import {Provider} from "react-redux";
 import {NavigationContainer} from "@react-navigation/native";
 import {store} from "@utils/store";
-import Navigation from "@navigation/Navigation";
 import {useFonts} from "expo-font";
 import {useCallback} from "react";
 import * as SplashScreen from 'expo-splash-screen';
+import CustomBottomNavigation from "@navigation/CustomBottomNavigation";
 
 export default function App() {
     const [fontsLoaded] = useFonts({
@@ -31,7 +30,8 @@ export default function App() {
         <SafeAreaView onLayout={onLayoutRootView} style={{flex: 1, backgroundColor: '#ffffff', paddingTop: 10}}>
             <Provider store={store}>
                 <NavigationContainer>
-                    <Navigation/>
+                    {/*<CustomNavigation/>*/}
+                    <CustomBottomNavigation/>
                 </NavigationContainer>
             </Provider>
         </SafeAreaView>

@@ -1,11 +1,14 @@
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import {useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import {TouchableOpacity, View, Text, StyleSheet} from "react-native";
 import * as Animatable from 'react-native-animatable';
-import {Bag2, Heart, Profile} from "iconsax-react-native";
+import {Bag2, Heart, Home, Profile} from "iconsax-react-native";
 import FavouritesScreen from "@screens/FavouritesScreen";
 import HomeScreen from "@screens/HomeScreen";
 import ProfileScreen from "@screens/ProfileScreen";
+import CustomNavigation from "@navigation/CustomNavigation";
+import {Colors} from "../constants";
+import {getFocusedRouteNameFromRoute} from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator()
 
@@ -69,17 +72,28 @@ const CustomBottomNavigation = () => {
         <Tab.Navigator screenOptions={{
             headerShown: false, tabBarStyle: styles.tabBar,
         }}>
-            <Tab.Screen name="Home" component={HomeScreen} options={{
-                tabBarButton: ({children, onPress, accessibilityState}) => {
-                    return (
-                        <ButtonTab onPress={onPress} accessibilityState={accessibilityState}
-                                   icon={<Bag2 size={24} color={accessibilityState?.selected ? 'white' : 'black'}
-                                               variant="Broken"/>}
-                                   text="Главная"
-                        />
-                    )
-                },
-            }}/>
+            <Tab.Screen name="Home" component={CustomNavigation}
+                        options={({route}) => ({
+                            tabBarButton: ({children, onPress, accessibilityState}) => {
+                                return (
+                                    <ButtonTab onPress={onPress} accessibilityState={accessibilityState}
+                                               icon={<Home size={24}
+                                                           color={accessibilityState?.selected ? 'white' : 'black'}
+                                                           variant="Broken"/>}
+                                               text="Главная"
+                                    />
+                                )
+                            },
+                            tabBarStyle: ((route: any) => {
+                                const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+
+                                if (routeName === 'Cart') {
+                                    return {display: 'none'};
+                                }
+                                return styles.tabBar;
+                            })(route)
+                        })}
+            />
             <Tab.Screen name="Favourites" component={FavouritesScreen} options={{
                 tabBarButton: ({children, onPress, accessibilityState}) => {
                     return (
@@ -92,6 +106,7 @@ const CustomBottomNavigation = () => {
                 },
             }}/>
             <Tab.Screen name="Profile" component={ProfileScreen} options={{
+                // tabBarStyle: {display: 'none'},
                 tabBarButton: ({children, onPress, accessibilityState}) => {
                     return (
                         <ButtonTab onPress={onPress} accessibilityState={accessibilityState}
@@ -136,14 +151,14 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#fc8080',
+        backgroundColor: Colors.primary,
         borderRadius: 25,
         color: 'white',
     },
     text: {
         fontSize: 12,
         textAlign: 'center',
-        color: '#fc8080',
+        color: Colors.primary,
         fontFamily: 'Montserrat-Bold'
     }
 })
