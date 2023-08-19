@@ -95,11 +95,7 @@ const CartItem = ({product_id, product_name, quantity, price, imageURL}: ICartIt
                         fontFamily: 'Montserrat-Medium',
                     }}>{quantityItem}</Text>
                     <TouchableOpacity
-                        onPress={() => {
-                            if (quantityItem > 1) {
-                                setQuantityItem(prev => prev - 1)
-                            }
-                        }}
+                        onPress={() => setQuantityItem(prev => prev - 1)}
                         style={{
                             backgroundColor: Colors.primary,
                             width: 30,

@@ -2,7 +2,7 @@ import {ScrollView, Text, TouchableOpacity, View} from "react-native";
 import {useAppDispatch, useAppSelector} from "@utils/store";
 import React, {useEffect} from "react";
 import {useFocusEffect} from "@react-navigation/native";
-import {ArrowLeft2} from "iconsax-react-native";
+import {ArrowLeft2, ShoppingBag} from "iconsax-react-native";
 import CartItem from "@components/cart-item/CartItem";
 import {Colors} from "../constants";
 import {clearCart} from "@utils/features/cartSlice";
@@ -48,72 +48,108 @@ const CartScreen = (props: any) => {
                         />
                     </View>
                 </TouchableOpacity>
-                <Text style={{
-                    fontFamily: 'Montserrat-Bold',
-                    fontSize: 16,
-                    flex: 1.5,
-                }}>Корзина</Text>
+                {cart.cart.length > 0 && (
+                    <Text style={{
+                        fontFamily: 'Montserrat-Bold',
+                        fontSize: 16,
+                        flex: 1.5,
+                    }}>Корзина</Text>
+                )}
             </View>
-            <Text
-            onPress={() => dispatch(clearCart())}
-                style={{
-                textAlign: 'right',
-                fontFamily: 'Montserrat-Regular',
-                fontSize: 16
-            }}>Очистить корзину</Text>
-            <ScrollView
-                style={{
-                    marginTop: 24,
-                    marginBottom: 48
-                }}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{
-                    gap: 14,
+            {cart.cart.length < 1 ? (
+                <View style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: 20
                 }}>
-                {cart.cart.map((cartItem: any) => (
-                    <>
-                        <CartItem
-                            imageURL={cartItem.product_object.photo}
-                            product_name={cartItem.product_object.product_name}
-                            quantity={cartItem.quantity}
-                            price={cartItem.product_object.price["1"].toString().slice(0, cartItem.product_object.price["1"].toString().length - 2)}
-                            product_id={cartItem.product_object.product_id}
-                        />
-                    </>
-                ))}
-            </ScrollView>
-            <View style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-            }}>
-                <Text style={{
-                    color: 'rgba(0, 0, 0, 0.5)',
-                    fontSize: 16,
-                    fontFamily: 'Montserrat-Medium'
-                }}>Полная цена</Text>
-                <Text style={{
-                    fontSize: 16,
-                    fontFamily: 'Montserrat-Bold'
-                }}>{cart.cart.reduce((acc, product) => {
-                    return acc + (Number(product.product_object.price["1"].toString().slice(0, product.product_object.price["1"].toString().length - 2)) * product.quantity)
-                }, 0)} UAH</Text>
-            </View>
-            <TouchableOpacity style={{
-                backgroundColor: Colors.primary,
-                paddingHorizontal: 24,
-                paddingVertical: 16,
-                borderRadius: 50,
-                marginTop: 40,
-                marginBottom: 16
-            }}>
-                <Text style={{
-                    color: 'white',
-                    fontSize: 16,
-                    fontFamily: 'Montserrat-Medium',
-                    textAlign: 'center'
-                }}>Продолжить</Text>
-            </TouchableOpacity>
+                    <ShoppingBag
+                        size="128"
+                        color={Colors.primary}
+                        variant="Bulk"
+                    />
+                    <Text style={{
+                        fontFamily: 'Montserrat-Bold',
+                        fontSize: 20,
+                        textAlign: 'center'
+                    }}>Корзина пустая</Text>
+                    <TouchableOpacity style={{
+                        paddingHorizontal: 24,
+                        paddingVertical: 16,
+                        backgroundColor: Colors.primary,
+                        borderRadius: 100,
+                    }} onPress={() => props.navigation.replace('Home')}>
+                        <Text style={{
+                            color: 'white',
+                            fontSize: 16,
+                            fontFamily: 'Montserrat-SemiBold',
+                        }}>Вернуться на главную</Text>
+                    </TouchableOpacity>
+                </View>
+            ) : (
+                <>
+                    <Text
+                        onPress={() => dispatch(clearCart())}
+                        style={{
+                            textAlign: 'right',
+                            fontFamily: 'Montserrat-Regular',
+                            fontSize: 16
+                        }}>Очистить корзину</Text>
+                    <ScrollView
+                        style={{
+                            marginTop: 24,
+                            marginBottom: 48
+                        }}
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{
+                            gap: 14,
+                        }}>
+                        {cart.cart.map((cartItem: any) => (
+                            <>
+                                <CartItem
+                                    imageURL={cartItem.product_object.photo}
+                                    product_name={cartItem.product_object.product_name}
+                                    quantity={cartItem.quantity}
+                                    price={cartItem.product_object.price["1"].toString().slice(0, cartItem.product_object.price["1"].toString().length - 2)}
+                                    product_id={cartItem.product_object.product_id}
+                                />
+                            </>
+                        ))}
+                    </ScrollView>
+                    <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                    }}>
+                        <Text style={{
+                            color: 'rgba(0, 0, 0, 0.5)',
+                            fontSize: 16,
+                            fontFamily: 'Montserrat-Medium'
+                        }}>Полная цена</Text>
+                        <Text style={{
+                            fontSize: 16,
+                            fontFamily: 'Montserrat-Bold'
+                        }}>{cart.cart.reduce((acc, product) => {
+                            return acc + (Number(product.product_object.price["1"].toString().slice(0, product.product_object.price["1"].toString().length - 2)) * product.quantity)
+                        }, 0)} UAH</Text>
+                    </View>
+                    <TouchableOpacity style={{
+                        backgroundColor: Colors.primary,
+                        paddingHorizontal: 24,
+                        paddingVertical: 16,
+                        borderRadius: 50,
+                        marginTop: 40,
+                        marginBottom: 16
+                    }}>
+                        <Text style={{
+                            color: 'white',
+                            fontSize: 16,
+                            fontFamily: 'Montserrat-Medium',
+                            textAlign: 'center'
+                        }}>Продолжить</Text>
+                    </TouchableOpacity>
+                </>
+            )}
         </View>
     )
 }
