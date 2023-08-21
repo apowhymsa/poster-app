@@ -15,41 +15,10 @@ const ignore = SplashScreen.preventAutoHideAsync();
 
 const ProductsByCategoryScreen = (props: any) => {
     const URL = `https://joinposter.com/api/menu.getProducts?token=569986:0996291ac9481581c876036c856da3dd&category_id=${props.route.params.category_id}&type=batchtickets`;
-    const [loading, setLoading] = useState(true);
-    const [data, setData] = useState<IResponse>();
-
-    useEffect(() => {
-        async function getProducts() {
-            await fetch(URL)
-                .then(response => response.json())
-                .then(data => {
-                    setData(data);
-                })
-                .finally(() => setLoading(false))
-        }
-
-        const ignore = getProducts();
-    }, []);
-
-    const onLayoutRootView = useCallback(async () => {
-        if (!loading) {
-            await SplashScreen.hideAsync();
-        }
-    }, [loading]);
-
-    if (loading) {
-        return null;
-    }
-
-    // if (loading) {
-    //     return <View>
-    //         <Text>Loading...</Text>
-    //     </View>
-    // }
+    const products = useAppSelector((state) => state.product);
 
     return (
         <View
-            onLayout={onLayoutRootView}
             style={{
                 flex: 1,
                 backgroundColor: '#fff',
@@ -73,7 +42,8 @@ const ProductsByCategoryScreen = (props: any) => {
                     />
                 </View>
             </TouchableOpacity>
-            {data?.response.length !== undefined && data.response.length <= 0 ? (
+            {products.products
+                .filter(product => product.menu_category_id === props.route.params.category_id).length === 0 ? (
                 <View style={{
                     flex: 1,
                     justifyContent: 'center',
@@ -109,7 +79,8 @@ const ProductsByCategoryScreen = (props: any) => {
                         fontFamily: 'Montserrat-Bold',
                         marginVertical: 24,
                         fontSize: 16
-                    }}>{props.route.params.category_name} ({data?.response.length})</Text>
+                    }}>{props.route.params.category_name} ({products.products
+                        .filter(product => product.menu_category_id === props.route.params.category_id).length})</Text>
                     <ScrollView
                         showsVerticalScrollIndicator={false}
                         contentContainerStyle={{
@@ -119,7 +90,9 @@ const ProductsByCategoryScreen = (props: any) => {
                             width: '100%',
                             gap: 20
                         }}>
-                        {data?.response.map((product: any) => (
+                        {products.products
+                            .filter(product => product.menu_category_id === props.route.params.category_id)
+                            .map((product: any) => (
                             <>
                                 <ProductItem
                                     isFavourites={!!product.favourite}

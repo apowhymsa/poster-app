@@ -6,6 +6,7 @@ interface ICart {
 const initialState: ICart = {
     cart: []
 }
+
 export const cartSlice = createSlice({
     name: 'cart',
     initialState: initialState,

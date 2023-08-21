@@ -9,6 +9,7 @@ import {Link} from "@react-navigation/native";
 import {useAppDispatch, useAppSelector} from "@utils/store";
 import {setCategories} from "@utils/features/categoriesSlice";
 import {Colors} from "../constants";
+import {setProducts} from "@utils/features/productSlice";
 
 const URL = 'https://joinposter.com/api/menu.getCategories/?token=569986:0996291ac9481581c876036c856da3dd'
 const URLProducts = 'https://joinposter.com/api/menu.getProducts/?token=569986:0996291ac9481581c876036c856da3dd&type=batchtickets'
@@ -16,7 +17,7 @@ const HomeScreen = (props: any) => {
     const [loaded, setLoaded] = useState(false);
     const dispatch = useAppDispatch();
     const categories = useAppSelector((state) => state.category);
-    const [products, setProducts] = useState([]);
+    const products = useAppSelector((state) => state.product);
 
     useEffect(() => {
         async function getCategories() {
@@ -31,7 +32,7 @@ const HomeScreen = (props: any) => {
         async function getProducts() {
             await fetch(URLProducts)
                 .then(response => response.json())
-                .then(data => setProducts(data.response))
+                .then(data => dispatch(setProducts(data.response)))
                 .catch(error => console.error(error))
                 .finally(() => setLoaded(true))
         }
@@ -76,7 +77,6 @@ const HomeScreen = (props: any) => {
                     }}>
                         <CustomSearchInput/>
                     </View>
-
 
                     <View style={{
                         marginTop: 24
@@ -154,7 +154,7 @@ const HomeScreen = (props: any) => {
                                 marginTop: 16,
                             }}>
 
-                            {products.map((product: any) => (
+                            {products.products.map((product: any) => (
                                 <ProductItem
                                     product_object={product}
                                     navigation={props.navigation}
@@ -193,8 +193,7 @@ const HomeScreen = (props: any) => {
                                 marginTop: 16,
                             }}>
 
-
-                            {products.map((product: any) => (
+                            {products.products.map((product: any) => (
                                 <ProductItem
                                     product_object={product}
                                     navigation={props.navigation}
