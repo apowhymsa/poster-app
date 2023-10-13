@@ -2,13 +2,14 @@ import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import React, {useEffect, useRef} from "react";
 import {TouchableOpacity, View, Text, StyleSheet} from "react-native";
 import * as Animatable from 'react-native-animatable';
-import {Bag2, Heart, Home, Profile} from "iconsax-react-native";
+import {Bag2, Category2, Heart, Home, Profile, Setting5} from "iconsax-react-native";
 import FavouritesScreen from "@screens/FavouritesScreen";
 import HomeScreen from "@screens/HomeScreen";
 import ProfileScreen from "@screens/ProfileScreen";
 import CustomNavigation from "@navigation/CustomNavigation";
 import {Colors} from "../constants";
-import {getFocusedRouteNameFromRoute} from "@react-navigation/native";
+import {getFocusedRouteNameFromRoute, useNavigation} from "@react-navigation/native";
+import CategoriesScreen from "@screens/CategoriesScreen";
 
 const Tab = createBottomTabNavigator()
 
@@ -101,6 +102,18 @@ const CustomBottomNavigation = () => {
                                    icon={<Heart size={24} color={accessibilityState?.selected ? 'white' : 'black'}
                                                 variant="Broken"/>}
                                    text="Избранное"
+                        />
+                    )
+                },
+            }}/>
+            <Tab.Screen name="Categories" component={CategoriesScreen} options={{
+                // tabBarStyle: {display: 'none'},
+                tabBarButton: ({children, onPress, accessibilityState}) => {
+                    return (
+                        <ButtonTab onPress={onPress} accessibilityState={accessibilityState}
+                                   icon={<Category2 size={24} color={accessibilityState?.selected ? 'white' : 'black'}
+                                                    variant="Broken"/>}
+                                   text="Категории"
                         />
                     )
                 },
